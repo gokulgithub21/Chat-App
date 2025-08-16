@@ -1,0 +1,39 @@
+<div class="container" id="container">
+  <div class="form-container sign-in-container">
+
+    <div class="logo-container">
+      <img src="/logo.png" alt="Logo" class="logo" />
+    </div>
+
+    <form [formGroup]="signinForm" (ngSubmit)="onSignIn()">
+      <h1>Sign In</h1>
+      <br />
+      <input type="email" formControlName="email" placeholder="Email" />
+      <div *ngIf="signinForm.get('email')?.touched && signinForm.get('email')?.invalid">
+        <span *ngIf="signinForm.get('email')?.errors?.['required']">Email is required</span>
+        <span *ngIf="signinForm.get('email')?.errors?.['pattern']">Invalid email format</span>
+      </div>
+
+      <input type="password" formControlName="password" placeholder="Password" />
+      <div *ngIf="signinForm.get('password')?.touched && signinForm.get('password')?.invalid">
+        <span *ngIf="signinForm.get('password')?.errors?.['required']">Password is required</span>
+        <span *ngIf="signinForm.get('password')?.errors?.['minlength']">Password has 8 characters or above</span>
+      </div>
+
+      <a href="/forgotpassword" id="forgotpassword" name="forgotpassword" class="forgotpassword">Forgot your password?</a>
+
+      <br />
+      <button type="submit" [disabled]="signinForm.invalid" >Sign In</button>
+    </form>
+  </div>
+
+  <div class="overlay-container">
+    <div class="overlay">
+      <div class="overlay-panel overlay-right">
+        <h1>Hello User!</h1>
+        <p>Enter your details to start your journey with us</p>
+        <a href="/signup"><button class="ghost">Sign Up</button></a>
+      </div>
+    </div>
+  </div>
+</div>

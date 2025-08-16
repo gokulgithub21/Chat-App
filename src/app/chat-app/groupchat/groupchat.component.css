@@ -1,0 +1,210 @@
+.container {
+    max-width: 600px; 
+    margin: 0 auto; 
+    
+}
+
+.card {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-top: -30px;
+}
+
+.card-header {
+    background-color: #80deea;
+    border-bottom: 1px solid #ddd;
+}
+
+.card-body {
+    padding: 15px;
+    background-color: #e3f2fd;
+    overflow-y: auto;
+    scrollbar-width: none;
+    height: 90vh;
+}
+
+
+.card-text {
+    font-size: 14px;
+    color: #555;
+}
+
+.contact-list {
+    max-height: 200px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+
+.list-group-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #b18383;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.list-group-item:hover{
+
+    color: red;
+}
+
+.list-group-item img {
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.list-group-item input[type="checkbox"] {
+    margin-right: 10px;
+    
+}
+
+.input-group {
+    margin-bottom: 20px;
+    max-height: 50px;
+
+}
+
+.input-group-prepend .input-group-text {
+    background-color: #f8f9fa;
+    border-right: 0;
+}
+
+.input-group .form-control {
+    border-radius: 4px;
+    border-left: 0;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+    font-size: 14px;
+}
+
+.form-control {
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 14px;
+    scrollbar-width: none;
+}
+
+textarea.form-control {
+    resize: vertical;
+    height: 100px;
+}
+
+#group-form {
+    display: block; 
+    justify-content: center; 
+    margin-top: 20px;
+}
+
+button#create-group-button {
+    width: auto; 
+    padding: 8px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    background-color: #a037da;
+    color: white;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+button#create-group-button:hover {
+    background-color: #00a6ff;
+    color: black;
+}
+
+
+
+#selectedContacts {
+    background-color: #f1f1f1;
+    color: #555;
+    font-size: 14px;
+    overflow-y:auto ;
+    scrollbar-width: none;
+    word-wrap: break-word;
+    line-height: 1.5;
+}
+
+
+
+
+
+  /* leftnavigationbar */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 60px; /* Default collapsed width */
+    transition: width 0.3s ease-in-out;
+    overflow: hidden;
+    height: 100vh; /* Full height */
+    background-color: black !important;
+}
+
+.sidebar.expanded {
+    width: 200px; /* Expanded width */
+}
+
+.nav-link {
+    white-space: nowrap;
+    padding: 10px 20px;
+    font-size: 16px;
+    transition: background-color 0.3s ease-in-out;
+    color: white; /* Default text color */
+}
+
+.nav-link:hover {
+    background-color: #df1f1f;
+    color: #ffcc00; /* Change text and icon color on hover */
+}
+
+.nav-link i {
+    margin-right: 10px;
+    min-width: 24px;
+    text-align: center;
+    color: white; /* Default icon color */
+    transition: color 0.3s ease-in-out;
+}
+
+.nav-link:hover i {
+    color: #ffcc00; /* Change icon color on hover */
+}
+
+.menu-text {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.sidebar.expanded .menu-text {
+    opacity: 1;
+}
+
+.toggle-btn {
+    width: 100%;
+    text-align: center;
+    border: none;
+    margin-top: 10px;
+    color: white; /* Toggle button icon color */
+}
+
+.toggle-btn:hover {
+    background-color: #383838;
+    color: #ffcc00; /* Toggle button icon hover color */
+}
+
+.nav {
+    flex-grow: 1; /* Ensures the logout button is pushed to the bottom */
+}
+
+.logout {
+    margin-top: auto; /* Positions logout at the bottom */
+}

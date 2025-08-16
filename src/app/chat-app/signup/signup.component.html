@@ -1,0 +1,55 @@
+
+<div class="container" id="container">
+	<div class="form-container sign-up-container">
+	  <form [formGroup]="signupForm" (ngSubmit)="onSignUp()">
+		<h1>Create Account</h1>
+		<br />
+		<input type="text" formControlName="name" placeholder="Name" />
+		<div *ngIf="signupForm.get('name')?.touched && signupForm.get('name')?.invalid">
+		  <span *ngIf="signupForm.get('name')?.errors?.['required']">Name is required</span>
+		  <span *ngIf="signupForm.get('name')?.errors?.['minlength']">Name must be at least 3 characters</span>
+		</div>
+  
+		<input type="email" formControlName="email" placeholder="Email" />
+		<div *ngIf="signupForm.get('email')?.touched && signupForm.get('email')?.invalid">
+		  <span *ngIf="signupForm.get('email')?.errors?.['required']">Email is required</span>
+		  <span *ngIf="signupForm.get('email')?.errors?.['pattern']">Invalid email format</span>
+		</div>
+  
+		<input type="text" formControlName="phoneno" placeholder="Phone No"  inputmode="numeric" (keypress)="allowOnlyDigits($event)"
+		(paste)="blockPaste($event)"/>
+		<div *ngIf="signupForm.get('phoneno')?.touched && signupForm.get('phoneno')?.invalid">
+		  <span *ngIf="signupForm.get('phoneno')?.errors?.['required']">Phone number is required</span>
+		  <span *ngIf="signupForm.get('phoneno')?.errors?.['pattern']">Phone number must be 10 digits</span>
+		</div>
+  
+		<input type="password" formControlName="password" placeholder="Password" />
+		<div *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.invalid">
+		  <span *ngIf="signupForm.get('password')?.errors?.['required']">Password is required</span>
+		  <span *ngIf="signupForm.get('password')?.errors?.['minlength']">Password at least 8 characters </span>
+		</div>
+  
+		<input type="password" formControlName="confirmPassword" placeholder="Confirm Password" />
+		<div *ngIf="signupForm.hasError('mismatch')">
+		  <span>Passwords do not match</span>
+		</div>
+		<br/>
+		<button type="submit" [disabled]="signupForm.invalid">Sign Up</button>
+	  </form>
+	</div>
+  
+	<div class="overlay-container">
+	  <div class="overlay">
+		<div class="overlay-panel overlay-right">
+		  <h1>Welcome Back!</h1>
+		  <p>To keep connected with us please login with your personal info</p>
+		  <a href=""><button class="ghost" id="signIn">Sign In</button></a>
+		</div>
+	  </div>
+	</div>
+  </div>
+  
+
+
+
+  

@@ -1,0 +1,126 @@
+<!-- leftnavigationbar -->
+
+<div class="d-flex">
+
+  <nav class="sidebar bg-dark" id="sidebar">
+      <button class="btn btn-dark toggle-btn" (click)="toggleSidebar()">
+          <i class="bi bi-list"></i>
+      </button>
+      <ul class="nav flex-column mt-3">
+          <li class="nav-item">
+              <a class="nav-link text-white d-flex align-items-center" href="chatlist">
+                  <i class="bi bi-chat-dots fs-4"></i>
+                  <span class="ms-3 menu-text">Chat</span>
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link text-white d-flex align-items-center" href="groupchat">
+                  <i class="bi bi-people fs-4"></i>
+                  <span class="ms-3 menu-text">Group Chat</span>
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link text-white d-flex align-items-center" href="profile">
+                  <i class="bi bi-person fs-4"></i>
+                  <span class="ms-3 menu-text">Profile</span>
+              </a>
+          </li>
+      </ul>
+      <ul class="nav">
+          <li class="logout nav-item">
+              <a class="nav-link text-white d-flex align-items-center" (click)="logout()">
+                  <i class="bi bi-box-arrow-right fs-4"></i>
+                  <span class="ms-3 menu-text">Logout</span>
+              </a>
+          </li>
+      </ul>
+  </nav>
+
+
+
+<!-- profile -->
+
+<div class="container d-flex justify-content-start align-items-start vh-100">
+  <div class="card shadow-lg p-4" style="width: 24rem;">
+   
+    <!-- Profile Picture -->
+    <div class="profile-image position-relative mb-4">
+      <label class="w-100">
+        <img [src]="user.avatar" class="rounded-circle img-fluid" alt="Profile" style="cursor: pointer;" />
+        <input type="file" accept="image/*" class="d-none" (change)="fileChangeEvent($event)" />
+      </label>
+    </div>
+
+    <!-- Image Cropper -->
+    <div *ngIf="imageChangedEvent">
+      <image-cropper
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="true"
+        [aspectRatio]="1/1"
+        format="png"
+        (imageCropped)="imageCropped($event)">
+      </image-cropper>
+      <div class="d-flex gap-2 mt-2">
+        <button class="btn btn-success btn-sm" (click)="cropImageConfirm()">
+            <i class="fas fa-check"></i> Save
+        </button>
+        <button class="btn btn-danger btn-sm" (click)="cancelImageSelection()">
+            <i class="fas fa-times"></i> Cancel
+        </button>
+    </div>
+    
+    
+    </div>
+
+
+    <!-- Username -->
+<div class="profile-info position-relative mb-3">
+  <h5 *ngIf="!isEditingUsername" class="d-inline-block">
+    {{ user.name }}
+    <i class="fas fa-edit ms-1" style="cursor: pointer;" (click)="onEditUsername()"></i>
+  </h5>
+
+  <!-- Editable Input Field -->
+  <div *ngIf="isEditingUsername" class="d-flex align-items-center gap-3">
+    <input type="text" [(ngModel)]="editedName" 
+    class="form-control" 
+    style="max-width: 250px; height: 34px; font-size: 16px; padding: 4px 8px;" /> 
+    
+
+<button class="btn btn-success btn-sm d-flex align-items-center justify-content-center" 
+    style="width: 34px; height: 34px; font-size: 16px;" 
+    (click)="saveUsername()">
+    <i class="fas fa-check"></i>
+</button>
+
+<button class="btn btn-danger btn-sm d-flex align-items-center justify-content-center" 
+    style="width: 34px; height: 34px; font-size: 16px;" 
+    (click)="cancelEditUsername()">
+    <i class="fas fa-times"></i>
+</button>
+  </div>
+
+  <br/> <br/>
+  <p class="text-muted mb-2">
+    <i class="fas fa-phone-alt me-2"></i> {{ user.phoneno }}
+  </p>
+  <p class="text-muted mb-4">
+    <i class="fas fa-envelope me-2"></i> {{ user.email }}
+  </p>
+</div>
+
+
+
+    <!-- Delete Account -->
+<div class="text-center mt-4">
+  <button class="btn btn-danger w-100" (click)="deleteAccount()">
+      <i class="bi bi-trash"></i> Delete Account
+  </button>
+</div>
+
+     
+
+   
+  </div>
+</div>
+</div>

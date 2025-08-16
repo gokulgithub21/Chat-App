@@ -1,0 +1,127 @@
+<!-- leftnavigationbar -->
+
+<div class="d-flex">
+  <!-- Sidebar -->
+  <nav class="sidebar bg-dark" id="sidebar">
+      <button class="btn btn-dark toggle-btn" (click)="toggleSidebar()">
+          <i class="bi bi-list"></i>
+      </button>
+      <ul class="nav flex-column mt-3">
+          <li class="nav-item">
+              <a class="nav-link text-white d-flex align-items-center" href="chatlist">
+                  <i class="bi bi-chat-dots fs-4"></i>
+                  <span class="ms-3 menu-text">Chat</span>
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link text-white d-flex align-items-center" href="groupchat">
+                  <i class="bi bi-people fs-4"></i>
+                  <span class="ms-3 menu-text">Group Chat</span>
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link text-white d-flex align-items-center" href="profile">
+                  <i class="bi bi-person fs-4"></i>
+                  <span class="ms-3 menu-text">Profile</span>
+              </a>
+          </li>
+      </ul>
+      <ul class="nav">
+          <li class="logout nav-item">
+              <a class="nav-link text-white d-flex align-items-center" (click)="logout()">
+                  <i class="bi bi-box-arrow-right fs-4"></i>
+                  <span class="ms-3 menu-text">Logout</span>
+              </a>
+          </li>
+      </ul>
+  </nav>
+
+
+  
+
+
+
+
+  <!-- Group Creation Form -->
+<div class="container mt-5">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">Group Creation</h5>
+      </div>
+      <div class="card-body">
+        <h5 class="mt-3">Contacts</h5>
+  
+        <!-- Search Input for Contacts -->
+        <div class="input-group mb-3">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Search contacts" 
+              [(ngModel)]="searchQuery" 
+              (input)="filterContacts()"
+            />
+            
+          </div>
+          
+  
+        <!-- Dynamically render the contacts -->
+        <div class="contact-list">
+          <div class="list-group">
+            <!-- Loop through filteredContacts and display them -->
+            <div *ngFor="let contact of filteredContacts" class="list-group-item list-group-item-action">
+              <input 
+                type="checkbox" 
+                [(ngModel)]="contact.selected" 
+                (change)="updateSelectedContacts(contact, contact.selected)"
+              />
+              <img src="/logo.png" class="rounded-circle mr-2" style="width: 30px; height: 30px;" />
+              <span>{{ contact.name }}</span>  <!-- Display contact name -->
+            </div>
+          </div>
+        </div>
+  
+        <!-- Group Name and Description Inputs -->
+        <div class="form-group mt-3">
+          <label for="groupName">Group Name:</label>
+          <input 
+            type="text" 
+            id="groupName" 
+            class="form-control" 
+            [(ngModel)]="groupName" 
+            required
+          />
+        </div>
+        <div class="form-group mt-3">
+          <label for="groupDescription">Description:</label>
+          <textarea 
+            id="groupDescription" 
+            class="form-control" 
+            [(ngModel)]="groupDescription" 
+            required
+          ></textarea>
+        </div>
+  
+        <!-- Group creation form -->
+        <div id="group-form" class="mt-3">
+          <form id="create-group-form">
+            <div style="display: flex; justify-content: center; margin-top: 20px;">
+              <button 
+                type="button" 
+                id="create-group-button" 
+                class="btn btn-primary" 
+                [disabled]="isCreateGroupDisabled()" 
+                (click)="createGroup()"
+              >
+                Create Group
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+</div>
+
+

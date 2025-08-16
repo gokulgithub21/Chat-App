@@ -1,0 +1,508 @@
+<!-- Sidebar -->
+<div class="d-flex">
+    <nav class="sidebar bg-dark" id="sidebar">
+        <button class="btn btn-dark toggle-btn" (click)="toggleSidebar()">
+            <i class="bi bi-list"></i>
+        </button>
+        <ul class="nav flex-column mt-3">
+            <li class="nav-item">
+                <a class="nav-link text-white d-flex align-items-center" href="chatlist">
+                    <i class="bi bi-chat-dots fs-4"></i>
+                    <span class="ms-3 menu-text">Chat</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white d-flex align-items-center" href="groupchat">
+                    <i class="bi bi-people fs-4"></i>
+                    <span class="ms-3 menu-text">Group Chat</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white d-flex align-items-center" href="profile">
+                    <i class="bi bi-person fs-4"></i>
+                    <span class="ms-3 menu-text">Profile</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav">
+            <li class="logout nav-item">
+                <a class="nav-link text-white d-flex align-items-center" (click)="logout()">
+                    <i class="bi bi-box-arrow-right fs-4"></i>
+                    <span class="ms-3 menu-text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Left-side Chat List -->
+    <div class="chat-left">
+        <!-- Tabs for switching between Chats and Groups -->
+        <div class="tabs">
+            <button (click)="toggleTab('chats')" [class.active]="isChatsActive">Chats</button>
+            <button (click)="toggleTab('groups')" [class.active]="!isChatsActive">Groups</button>
+        </div>
+
+        <div class="search-container">
+            <div class="input-with-icon">
+                <input type="text" placeholder="Search" class="search-input" [(ngModel)]="searchQuery"
+                    (input)="filterContacts()" />
+
+            </div>
+
+
+
+            <!-- Chat List -->
+            <div *ngIf="isChatsActive">
+                <div class="contact-list">
+                    <div *ngIf="filteredContacts.length === 0" class="no-contacts">Add contacts to chat.</div>
+                    <div class="contact" *ngFor="let contact of filteredContacts"
+                        (click)="markAsRead(contact.email); selectContact(contact)"
+                        (contextmenu)="openContextMenu($event, contact)">
+
+                        <img [src]="contact.avatar || '/default_profile.png'" alt="Profile Image"
+                            class="contact-avatar">
+                        <div class="contact-info">
+                            <h4>
+                                {{ contact.name | titlecase }}
+                                <span *ngIf="contact.pinned" class="pinned-icon"><i class="bi bi-pin-angle-fill"
+                                        style="color: red; font-size: 14px;"></i>
+                                </span>
+                            </h4>
+                            <p class="last-message">{{ contact.lastMessage || 'Tap to chat' }}</p>
+                        </div>
+                        <div class="chat-meta">
+                            <span class="timestamp" *ngIf="contact.timestamp">{{ getTimeAgo(contact.timestamp) }}</span>
+
+                            <span *ngIf="contact.unreadCount > 0" class="unread-badge">
+                                {{ contact.unreadCount }}
+                            </span>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Context Menu -->
+            <div id="contextMenu" class="context-menu" style="display: none;">
+                <ul>
+                    <li (click)="pinContact(selectedContactToDelete)"><i class="bi bi-pin-angle"
+                            style="color: red; font-size: 14px;"></i> Pin</li>
+                    <li (click)="confirmDeleteContact()"><i class="bi bi-trash"
+                            style="color: red; font-size: 14px;"></i> Delete Contact</li>
+                </ul>
+            </div>
+
+
+            <!-- Group List -->
+            <div *ngIf="!isChatsActive">
+                <div class="contact-list">
+                    <div *ngIf="filteredGroups.length === 0" class="no-contacts">No groups found.</div>
+                    <div class="contact group" *ngFor="let group of filteredGroups"
+                        (click)="markAsRead( group.id);selectGroup(group)"
+                        (contextmenu)="openGroupContextMenu($event, group)">
+
+                        <img [src]="group.avatar || '/group_default_image.png'" alt="Group Image"
+                            class="contact-avatar">
+                        <div class="contact-info">
+                            <h4>
+                                {{ group.group_name | titlecase }}
+                                <span *ngIf="group.pinned" class="pinned-icon"><i class="bi bi-pin-angle-fill"
+                                        style="color: red; font-size: 14px;"></i>
+                                </span>
+                            </h4>
+                            <p class="last-message">{{ group.lastMessage || 'Tap to chat' }}</p>
+                        </div>
+                        <div class="chat-meta">
+                            <span class="timestamp">{{ getTimeAgo(group.timestamp) || 'Just now' }}</span>
+                            <span *ngIf="group.unreadCount > 0" class="unread-badge">
+                                {{ group.unreadCount || 0 }}
+                            </span>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Group Context Menu -->
+            <div id="groupContextMenu" class="context-menu" style="display: none;">
+                <ul>
+                    <li (click)="pinGroup(selectedGroupToPin)"><i class="bi bi-pin-angle"
+                            style="color: red; font-size: 14px;"></i> Pin</li>
+                </ul>
+            </div>
+
+
+
+        </div>
+
+        <!-- Add Contact Button -->
+        <div class="add-contact" *ngIf="isChatsActive">
+            <button class="add-btn" (click)="openModal()">
+                <i class="bi bi-plus-lg"></i>
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Contact Form Modal -->
+    <div id="addContactModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" (click)="closeModal()">&times;</span>
+            <h2>Add New Contact</h2>
+            <form (submit)="saveContact($event)">
+                <label for="name">Name:</label>
+                <input type="text" id="name" [(ngModel)]="contact.name" name="name" required />
+
+                <label for="email">Email ID:</label>
+                <input type="email" id="email" [(ngModel)]="contact.email" name="email" required />
+
+                <button type="submit" class="save-btn">Save</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <!-- Chat Content Area -->
+    <div class="chat-content" *ngIf="selectedContact">
+
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="header-left">
+                <img [src]="selectedContact.avatar" alt="Group Image" class="profile-img">
+                <div class="user-info">
+                    <h3>{{ selectedContact.name | titlecase }}</h3>
+
+
+                    <div *ngIf="isChatsActive" class="status-container">
+                        <div *ngIf="selectedContact.isOnline" class="status online">Online</div>
+                        <div *ngIf="!selectedContact.isOnline" class="status last-seen">
+                          Last Seen: {{ selectedContact.lastSeen | date: 'dd/MM/yy, h:mm a' }}
+                        </div>
+                      </div>
+                      
+
+                    
+                    <p *ngIf="!isChatsActive">
+                        <a style="text-decoration: none;" href="javascript:void(0)" (click)="openGroupDetails()">View
+                            Group Details</a>
+                    </p>
+
+                </div>
+            </div>
+            <!-- Header Actions (Delete & Cancel Buttons) -->
+            <div class="header-actions" *ngIf="selectedMessages.length > 0">
+                <button class="btn btn-danger" (click)="openDeleteModal(isGroupChat)">
+                    <i class="bi bi-trash"></i>
+                </button>
+
+                <button class="btn btn-secondary" (click)="cancelSelection()">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade show d-block" *ngIf="showDeleteModal">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content delete-modal">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Delete</h5>
+                            <button type="button" class="btn-close" (click)="closeDeleteModal()"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete the selected messages?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" (click)="confirmDelete()">Yes</button>
+                            <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+        <!-- Group Details Modal -->
+        <div id="groupDetailsModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" (click)="closeGroupDetails()">&times;</span>
+
+
+
+                <!-- Clickable Group Image -->
+                <div class="group-image-container">
+                    <label for="groupImageInput" *ngIf="selectedContact.isCreator">
+                        <img [src]="selectedContact.avatar || '/group_default_image.png'" alt="Group Image"
+                            class="group-img">
+                    </label>
+                    <input type="file" id="groupImageInput" (change)="fileChangeEvent($event)" accept="image/*"
+                        style="display: none;" *ngIf="selectedContact.isCreator">
+                </div>
+
+                <!-- Image Cropper for Group -->
+                <div *ngIf="imageChangedEvent">
+                    <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true"
+                        [aspectRatio]="1/1" format="png" (imageCropped)="imageCropped($event)">
+                    </image-cropper>
+
+                    <div class="d-flex gap-2 mt-2">
+                        <button class="btn btn-success btn-sm" (click)="cropImageConfirm()">
+                            <i class="fas fa-check"></i> Save
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="cancelImageSelection()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- Editable Group Name -->
+                <div class="edit-group-name">
+                    <span *ngIf="!isEditingGroupName" class="group-name-display">
+                        {{ selectedContact.name }}
+                        <i class="bi bi-pencil edit-icon" (click)="toggleEditGroupName()"
+                            *ngIf="selectedContact.isCreator"></i>
+                    </span>
+
+                    <div *ngIf="isEditingGroupName" class="edit-group-container">
+                        <input type="text" [(ngModel)]="selectedContact.name" class="group-name-input" />
+                        <button class="save-icon" (click)="updateGroupName()"><i class="fas fa-check"></i></button>
+                        <button class="cancel-icon" (click)="cancelEditGroupName()"><i
+                                class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <br />
+
+                <!-- Group Description -->
+                <div class="group-description-container">
+                    <p *ngIf="!isEditingDescription" class="group-description">
+                        <strong>Description:</strong> {{ selectedContact.description }}
+                        <span class="bi bi-pencil edit-icon" *ngIf="selectedContact.isCreator"
+                            (click)="toggleEditDescription()"></span>
+                    </p>
+
+                    <div *ngIf="isEditingDescription" class="edit-description">
+                        <textarea [(ngModel)]="selectedContact.description" class="edit-input"></textarea>
+                        <button (click)="saveDescription()" class="save-icon"><i class="fas fa-check"></i></button>
+                        <button (click)="cancelEditDescription()" class="cancel-icon"><i
+                                class="fas fa-times"></i></button>
+                    </div>
+                </div>
+
+                <!-- Group Creator -->
+                <p><strong>Created by:</strong></p>
+                <div class="creator-details">
+                    <img [src]="selectedContact.creator?.avatar || '/default_profile.png'" alt="Creator Image"
+                        class="profile-img">
+                    <span>{{ selectedContact.creator?.name | titlecase }}</span>
+                </div>
+
+                <!-- Add Participants Option -->
+                <div class="add-participants-container">
+                    <div class="add-participants" (click)="openAddMembersModal()" *ngIf="selectedContact.isCreator">
+                        <i class="bi bi-person-plus">Add members</i>
+                    </div>
+                </div>
+                <br />
+
+                <!-- Group Members -->
+                <p><strong>Members:</strong></p>
+                <ul class="member-list">
+                    <li *ngFor="let member of selectedContact.members">
+                        <img [src]="member.avatar || '/default_profile.png'" alt="Member Image" class="profile-img">
+                        <span>{{ member.name | titlecase }}</span>
+                        <i class="bi bi-person-x remove-icon" (click)="removeMemberFromGroup(member)"
+                            *ngIf="selectedContact.isCreator"></i>
+                    </li>
+                </ul>
+
+
+                <!-- Exit Group Button (Only for non-creators) -->
+                <div class="center-container" *ngIf="!selectedContact.isCreator">
+                    <button class="exit-group-btn" (click)="exitGroup()">
+                        <i class="bi bi-box-arrow-left"></i> Exit Group
+                    </button>
+                </div>
+
+                <!-- Delete Group Button (only for creator) -->
+                <div class="center-container" *ngIf="selectedContact.isCreator">
+                    <button class="delete-group-btn" (click)="deleteGroup()">
+                        <i class="bi bi-trash"></i> Delete Group
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Add Members Modal -->
+        <div id="addMembersModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" (click)="closeAddMembersModal()">&times;</span>
+                <h2>Add Members</h2>
+
+                <!-- Search for Users -->
+                <input type="text" class="search-input" [(ngModel)]="searchUserQuery"
+                    (input)="filterAvailableContacts()" placeholder="Search Users">
+
+                <!-- List of Available Users -->
+                <ul class="member-list">
+                    <li *ngFor="let contact of filteredContacts">
+                        <img [src]="contact.avatar || '/default_profile.png'" alt="User Image" class="profile-img">
+                        <span>{{ contact.name | titlecase }}</span>
+                        <i class="bi bi-person-plus add-icon" (click)="addMemberToGroup(contact)"></i>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+
+
+
+
+        <!-- Chat Messages -->
+        <div class="chat-messages" #chatMessages id="chatMessages">
+            <div *ngFor="let message of messages" class="message" [class.sender]="message.sender === user.email"
+                [class.receiver]="message.sender !== user.email" [class.selected]="selectedMessages.includes(message)"
+                (mousedown)="toggleMessageSelection($event, message)" (mouseup)="clearLongPressTimeout()"
+                (mouseleave)="clearLongPressTimeout()">
+
+                <div class="message-bubble" [class.sender]="message.sender === user.email"
+                    [class.receiver]="message.sender !== user.email" [ngClass]="getSenderClass(message.sender)">
+
+                    <!-- Show deleted message -->
+                    <ng-container *ngIf="message.deleted; else normalMessage">
+                        <p class="deleted-message">This message was deleted</p>
+
+                    </ng-container>
+
+                    <!-- Normal message content -->
+                    <ng-template #normalMessage>
+                        <p class="sender-name" *ngIf="!isChatsActive">{{ message.senderName }}</p>
+                        <p class="message-text" *ngIf="message.text">{{ message.text }}</p>
+
+                        <!-- Display Sent Files -->
+                        <div *ngIf="message.fileUrl">
+                            <!-- Image Preview -->
+                            <ng-container *ngIf="isImage(message.fileUrl)">
+                                <a [href]="message.fileUrl" [attr.download]="getFileName(message.fileUrl)"
+                                    class="file-link" target="_blank">
+                                    <i class="bi bi-file-earmark-image"></i> {{ getFileName(message.fileUrl) }}
+                                </a>
+                            </ng-container>
+
+                            <!-- PDF File -->
+                            <ng-container *ngIf="isPDF(message.fileUrl)">
+                                <a [href]="message.fileUrl" [attr.download]="getFileName(message.fileUrl)"
+                                    class="file-link" target="_blank">
+                                    <i class="bi bi-file-earmark-pdf"></i> {{ getFileName(message.fileUrl) }}
+                                </a>
+                            </ng-container>
+
+                            <!-- Audio File -->
+                            <ng-container *ngIf="isAudio(message.fileUrl)">
+                                <audio [src]="message.fileUrl" class="chat-audio" controls></audio>
+                            </ng-container>
+
+                            <!-- Video Preview -->
+                            <ng-container *ngIf="isVideo(message.fileUrl)">
+                                <video [src]="message.fileUrl" class="chat-video" controls></video>
+                            </ng-container>
+
+                            <!-- Other Files -->
+                            <ng-container *ngIf="isOtherFile(message.fileUrl)">
+                                <a [href]="message.fileUrl" [attr.download]="getFileName(message.fileUrl)"
+                                    class="file-link" target="_blank">
+                                    <i class="bi bi-file-earmark"></i> {{ getFileName(message.fileUrl) }}
+                                </a>
+                            </ng-container>
+                        </div>
+                    </ng-template>
+
+                    <div class="timestamp-container">
+                        <span class="timestamp">{{ message.timestamp || 'Just now' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Chat Input Section with File Preview -->
+        <div class="chat-input-container">
+            <!-- File Preview Section -->
+            <div *ngIf="filePreviewUrl" class="file-preview">
+                <!-- Preview Images -->
+                <ng-container *ngIf="selectedFile && selectedFile.type.startsWith('image')">
+                    <img [src]="filePreviewUrl" class="preview-image" alt="Preview">
+                </ng-container>
+
+                <!-- Preview Videos -->
+                <ng-container *ngIf="selectedFile && selectedFile.type.startsWith('video')">
+                    <video [src]="filePreviewUrl" class="preview-video" controls></video>
+                </ng-container>
+
+                <!-- Preview PDFs -->
+                <ng-container *ngIf="selectedFile && selectedFile.type.includes('pdf')">
+                    <iframe [src]="filePreviewUrl" class="preview-pdf"></iframe>
+                    <a [href]="filePreviewUrl" target="_blank" download class="file-link">
+                        <i class="bi bi-file-earmark-pdf"></i> Download PDF
+                    </a>
+                </ng-container>
+
+                <!-- Preview Audio Files -->
+                <ng-container *ngIf="selectedFile && selectedFile.type.includes('audio')">
+                    <audio [src]="filePreviewUrl" class="preview-audio" controls></audio>
+                </ng-container>
+
+                <!-- Preview Other Files -->
+                <ng-container *ngIf="selectedFile && !selectedFile.type.startsWith('image') &&
+                             !selectedFile.type.startsWith('video') && 
+                             !selectedFile.type.includes('pdf') &&
+                             !selectedFile.type.includes('audio')">
+                    <a [href]="filePreviewUrl" target="_blank" class="file-link">
+                        <i class="bi bi-file-earmark"></i> {{ selectedFile.name }}
+                    </a>
+                </ng-container>
+
+                <!-- Cancel Button -->
+                <button class="cancel-preview-btn" (click)="cancelFilePreview()">
+                    <i class="bi bi-x-circle fs-4"></i>
+                </button>
+            </div>
+
+            <!-- Chat Input Box -->
+            <div class="chat-input">
+                <div class="input-container">
+                    <textarea id="messageInput" placeholder="Type a message..." [(ngModel)]="messageInput"
+                        (keydown)="handleKeyPress($event)"></textarea>
+
+                    <!-- File Upload Button -->
+                    <label for="fileInput" class="upload-btn">
+                        <i class="bi bi-paperclip fs-5"></i>
+                    </label>
+                    <input type="file" id="fileInput" #fileInput (change)="onFileSelected($event)"
+                        style="display: none;" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.ppt,.txt,.zip" />
+
+                    <!-- Send Button -->
+                    <button class="bi bi-send" (click)="sendMessage()"></button>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
