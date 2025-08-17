@@ -26,7 +26,7 @@ It provides secure authentication, one-to-one and group messaging, **end-to-end 
 
 ## 🛠 Tech Stack
 **Frontend**
-- Angular 18.2.1
+- Angular 18.2.10
 - TypeScript
 - Socket.IO (WebSockets)
 
@@ -77,7 +77,7 @@ ng serve
 ```
 ➡️ Runs at: **http://localhost:4200/**
 
-> ⚠️ Make sure Angular version **18.2.1** is installed.  
+> ⚠️ Make sure Angular version **18.2.10** is installed.  
 > ⚠️ Use the latest Node.js version, otherwise it may not work.
 
 ---
