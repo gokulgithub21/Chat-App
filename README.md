@@ -40,6 +40,7 @@ It provides secure authentication, one-to-one and group messaging, *end-to-end e
 
 ## 📂 Project Structure
 
+```bash
 
 chat-app/
 ├── frontend/                 # Angular project
@@ -54,18 +55,18 @@ chat-app/
 ├── server.js                 # Node.js Socket.IO server
 ├── screenshots/              # Project screenshots
 └── README.md                 # Project documentation
-
+```
 
 ---
 
 ## ⚡ Installation & Setup
 
 ### 1️⃣ Frontend (Angular)
-bash
+```bash
 cd frontend
 npm install
 ng serve
-
+```
 ➡ Runs at: *http://localhost:4200/*
 
 ---
@@ -73,9 +74,9 @@ ng serve
 ### 2️⃣ Backend (PHP + MySQL)
 1. Copy the backend/ folder into your *XAMPP htdocs* directory.
 2. Install *PHPMailer* in your htdocs (for email password reset):  
-   bash
+   ```bash
    composer require phpmailer/phpmailer
-   
+   ```
 3. Start *Apache* & *MySQL* in XAMPP.
 4. Open *phpMyAdmin* → import chatapp.sql.
 
@@ -83,9 +84,9 @@ ng serve
 
 ### 3️⃣ Real-Time Messaging (Socket.IO)
 Run the Node server:
-bash
+```bash
 node server.js
-
+```
 ➡ Runs at: *http://localhost:3000/*
 
 ---
