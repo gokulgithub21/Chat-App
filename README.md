@@ -37,15 +37,15 @@ profile management, and a responsive UI for all devices.
 
 chat-app/
 │── frontend/ # Angular project
-│ ├── src/
-│ ├── package.json
-│ └── .gitignore
+│   ├── src/
+│   ├── package.json
+│   └── .gitignore
 │
 │── backend/ # PHP + MySQL
-│ ├── angular-auth/
-│ ├── forgot_password.php
-│ ├── reset_password.php
-│ └── chatapp.sql
+│   ├── angular-auth/
+│   ├── forgot_password.php
+│   ├── reset_password.php
+│   └── chatapp.sql
 │
 │── screenshots/ # Project images
 │── README.md
@@ -59,27 +59,30 @@ chat-app/
 cd frontend
 npm install
 ng serve
-  =>Runs at: http://localhost:4200/
+```
+➡️ Runs at: **http://localhost:4200/**
 
-2️⃣ Backend (PHP + MySQL)
+---
 
-Copy the backend/ folder into your XAMPP htdocs directory.
+### 2️⃣ Backend (PHP + MySQL)
+1. Copy the `backend/` folder into your **XAMPP htdocs** directory.
+2. Install **PHPMailer** in your htdocs (for email password reset):  
+   ```bash
+   composer require phpmailer/phpmailer
+   ```
+3. Start **Apache** & **MySQL** in XAMPP.
+4. Open **phpMyAdmin** → import `chatapp.sql`.
 
-Install PHPMailer in your htdocs (for email password reset):
-    =>composer require phpmailer/phpmailer
+---
 
-Start Apache & MySQL in XAMPP.
-
-Open phpMyAdmin → import chatapp.sql.
-
-3️⃣ Real-Time Messaging (Socket.IO)
-
+### 3️⃣ Real-Time Messaging (Socket.IO)
 Run the Node server:
-node server.js  #socket.io
-  =>Runs at: http://localhost:3000/
+```bash
+node server.js
+```
+➡️ Runs at: **http://localhost:3000/**
 
-
-📸 Screenshots
+---
 
 ## 📸 Screenshots
 
@@ -92,6 +95,15 @@ node server.js  #socket.io
 
 - **Forgot Password**  
   ![Forgot Password](screenshots/forgot_password.png)
+
+---
+
+### 📇 Contacts
+- **Add New Contact**  
+  Users can add new friends or colleagues by entering their email.  
+  Once added, the contact appears in their chat list for quick access.  
+
+  ![Add New Contact](screenshots/add_new_contact.png)
 
 ---
 
@@ -119,16 +131,11 @@ node server.js  #socket.io
 
 ---
 
-### 👤 Profile & Contacts
+### 👤 Profile
 - **Profile Management**  
   ![Profile Management](screenshots/profile_management.png)
 
-- **Add New Contact**  
-  ![Add New Contact](screenshots/add_new_contact.png)
+---
 
-
-
-📜 License
-
+## 📜 License
 This project is open-source. You can use it for learning and development purposes.
-
